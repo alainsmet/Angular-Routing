@@ -80,6 +80,7 @@ export class ProductService {
       errorMessage = `Backend returned code ${err.status}: ${err.message}`;
     }
     console.error(err);
+    console.log(err.message);
     return throwError(() => errorMessage);
   }
 

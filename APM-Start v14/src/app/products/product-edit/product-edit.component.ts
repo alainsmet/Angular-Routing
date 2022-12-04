@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { MessageService } from '../../messages/message.service';
 
-import { Product } from '../product';
+import { Product, ProductResolved } from '../product';
 import { ProductService } from '../product.service';
 
 @Component({
@@ -24,12 +24,20 @@ export class ProductEditComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(
-      params => {
-        const id = Number(params.get('id'));
-        this.getProduct(id);
+    this.route.data.subscribe(data => {
+      const resolvedData: ProductResolved = data['product'];
+      if (resolvedData.error) {
+        this.errorMessage = String(resolvedData.error);
       }
-    );
+      this.onProductRetrieved(resolvedData.product);
+    });
+    
+    // this.route.paramMap.subscribe(
+    //   params => {
+    //     const id = Number(params.get('id'));
+    //     this.getProduct(id);
+    //   }
+    // );
   }
 
   getProduct(id: number): void {
@@ -39,7 +47,7 @@ export class ProductEditComponent implements OnInit {
     });
   }
 
-  onProductRetrieved(product: Product): void {
+  onProductRetrieved(product: Product | null): void {
     this.product = product;
 
     if (!this.product) {
